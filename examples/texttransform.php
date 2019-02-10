@@ -2,9 +2,7 @@
 
 use TStuff\Php\Transform\TextTransform;
 
-session_start();
-define("BASE_PATH",$_SERVER['CONTEXT_DOCUMENT_ROOT']."/tests/");
-include(BASE_PATH . "TSTUFF/PHP/tstuff.php");
+
 
 
 ?>

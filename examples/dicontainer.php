@@ -1,8 +1,5 @@
 <?php
 
-session_start();
-define("BASE_PATH",$_SERVER['CONTEXT_DOCUMENT_ROOT']."/tests/");
-include(BASE_PATH . "TSTUFF/PHP/tstuff.php");
 
 use TStuff\Php\DI as DI;
 use TestClass as T;
@@ -45,4 +42,31 @@ $in->RegisterService("user", function (DI\TInject $c) {
 $in->RegisterService("UserHandler", function (DI\TInject $c) {
     //Use full name to create the service. UserHandler needs User and PrintMessage in the constructor
     return $c->Instantiate("TestClass\UserHandler");
+});
+
+//register PDO as a service
+$in->RegisterService("db",function(DI\TInject $c){
+
+    try{
+    $pdo =  new PDO(
+       DB_DSN,
+       DB_USER,
+       DB_PASS,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]//options
+    );
+    return $pdo;
+    }catch(\PDOException $e){
+        /**
+         * @var TestClass\PrintMessage $print
+         */
+        $print = $c->getService("msg");
+
+        $print->print($e->getMessage());
+
+    }
+    return null;
 });
