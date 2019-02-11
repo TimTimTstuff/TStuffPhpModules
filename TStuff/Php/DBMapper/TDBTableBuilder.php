@@ -100,7 +100,7 @@ namespace TStuff\Php\DBMapper {
           
           //set unique
           $fields = "`".$this->fieldPrimary[0]."`";
-          foreach (self::uniqueFields as  $value) {
+          foreach (self::$uniqueFields as  $value) {
               $fields.=",`".$value."`";
           }
           $content.= str_replace("{fields}",$fields,self::$uniqueTemplate);
