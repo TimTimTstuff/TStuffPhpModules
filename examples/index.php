@@ -12,6 +12,10 @@ include(BASE_PATH . "TSTUFF/PHP/tstuff.php");
     <head>
     </head>
     <body>
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
         <nav>
             <ul>
                 <li><a href="?demo=setup">Setup {Requires mysql}</a></li>
@@ -45,5 +49,6 @@ include(BASE_PATH . "TSTUFF/PHP/tstuff.php");
                 break;
         }
         ?>
+
     </body>
 </html>
