@@ -38,25 +38,13 @@ namespace TestClass   {
              * @var timestamp
              */
             public $lastLogin;
+    
             /**
              * Undocumented variable
              *
-             * @var string
-             * @DBMapper {"type":"text"}
+             * @var bool
              */
-            public $description;
-            /**
-             * Undocumented variable
-             *
-             * @var int
-             */
-            public $age;
-            /**
-             * Undocumented variable
-             *
-             * @var float
-             *
-             */
-            public $currentMoney;
+            public $isAdmin;
+
         }
     }

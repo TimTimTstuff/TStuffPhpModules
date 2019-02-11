@@ -30,4 +30,6 @@ try{
 $mapper = new TDBMapper($pdo);
 
 $mapper->registerObject("TestClass\DbUser");
+$mapper->registerObject("TestClass\TstuffPasswords");
+$mapper->registerObject("TestClass\DbProducts");
 $mapper->updateDatabase();
