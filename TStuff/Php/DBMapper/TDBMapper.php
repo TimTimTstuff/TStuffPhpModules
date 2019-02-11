@@ -140,7 +140,6 @@ use TStuff\Php\Transform\TextTransform;
           
             foreach ($sqlExecutes as  $sql) {
                 try{
-                    echo "Run: $sql <br/>";
                     $this->database->exec($sql);
                     //@todo for debug
                     
