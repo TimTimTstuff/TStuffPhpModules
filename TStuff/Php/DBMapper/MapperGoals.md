@@ -5,6 +5,11 @@
 2. Define Property / column in phpDoc annotations
 3. Update Tables (Remove or Add fields, currently not change) after creation
 
+## Planed Features
+1. Update / Change Fields (datatype, size, index, ...)
+2. Add Querying / searching for records over objects
+3. Cache Metadata / cached querys
+
 
 ## Using DB Mapper to create Tables
 
