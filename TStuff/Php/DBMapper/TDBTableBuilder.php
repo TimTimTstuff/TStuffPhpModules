@@ -30,6 +30,9 @@ namespace TStuff\Php\DBMapper {
         private static $primaryTemplate = ", PRIMARY KEY (`{name}`)";
         private static $uniqueTemplate = ", UNIQUE ({fields})";
         private static $tableTemplate = "CREATE TABLE  {table} ( {content} ) ENGINE = {engine}";
+        private static $addField = "ALTER TABLE `{table}` ADD {field}";
+        private static $removeField = "ALTER TABLE `{table}` DROP `{name}`;";
+        private static $updateField = "ALTER TABLE `{table}` CHANGE `{name}` {field}";
 
         public function __construct(string $tableName, string $dbEngine)
         {
@@ -45,10 +48,19 @@ namespace TStuff\Php\DBMapper {
 
         public function addField(string $name, string $type, bool $notNull, ?int $size, ?string $default, ?string $index) : void
         {
-            $type = $this->typeConverter($type);
+            $this->fields[] = self::getFieldAddAttribute($name, $type,$notNull,$size,$default,$index);
+        }
+
+        private static function getFieldAddAttribute(string $name, string $type, bool $notNull, ?int $size, ?string $default, ?string $index){
+            
+            $type = self::typeConverter($type);
 
             if($type == "VARCHAR" && $size == null){
                 $size = 500;
+            }
+
+            if($type == "int" && $sieze = null){
+                $size = 11;
             }
 
             if($size != null){ 
@@ -67,8 +79,7 @@ namespace TStuff\Php\DBMapper {
                     $this->uniqueFields[] = $name;
                 }
             }
-
-            $this->fields[] = [$name, $type,$nn, $default];
+            return [$name, $type,$nn, $default];
         }
 
         public function getSql() : string
@@ -101,7 +112,24 @@ namespace TStuff\Php\DBMapper {
             self::$tableTemplate);
         }
 
-        private  function typeConverter($x):string{
+        public static function getDeleteColumnSql(string $table, string $name){
+            return str_replace(array("{table}","{name}"),array($table,$name),self::$removeField);
+        }
+
+        public static function getAddColumnSql(string $table,string $name, string $type, bool $notNull, ?int $size, ?string $default, ?string $index){
+            $field =  self::getFieldAddAttribute($name,$type,$notNull,$size,$default,$index);
+            $fieldSql = str_replace(array("{name}","{type}","{not_null}","{default}"),$field,str_replace(",","",self::$fieldTemplate));
+            return str_replace(array("{table}","{field}"),array($table,$fieldSql),self::$addField);
+        }
+
+        public static function getUpdateColumnSql(string $table,string $name, string $type, bool $notNull, ?int $size, ?string $default, ?string $index)
+        {
+            $field =    self::getFieldAddAttribute($name,$type,$notNull,$size,$default,$index);
+            $fieldSql = str_replace(array("{name}","{type}","{not_null}","{default}"),$field,str_replace(",","",self::$fieldTemplate));
+            return str_replace(array("{table}","{field}","{name}"),array($table,$fieldSql,$name),self::$updateField);
+        }
+
+        private static  function typeConverter($x):string{
             $x = trim($x);
             if($x == 'string') {
                 return "VARCHAR";
