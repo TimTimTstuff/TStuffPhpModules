@@ -22,7 +22,7 @@ namespace TStuff\Php\DBMapper {
         private $fieldPrimary;
         private $tableName;
         private $dbEngine;
-        private $uniqueFields = [];
+        private static $uniqueFields = [];
 
         private static $primaryFieldTemplate = "`{name}` {type} NOT NULL {AI}";
         private static $fieldTemplate = ", `{name}` {type} {not_null} NULL {default} ";
@@ -42,7 +42,7 @@ namespace TStuff\Php\DBMapper {
 
         public function addPrimayField(string $name, string $type, bool $autoIncrement) : void
         {
-            
+            self::$uniqueFields = [];
             $this->fieldPrimary = [$name, $this->typeConverter($type), $autoIncrement?"AUTO_INCREMENT":""];
         }
 
@@ -76,7 +76,7 @@ namespace TStuff\Php\DBMapper {
             }
             if($index != null){
                 if($index == "unique"){
-                    $this->uniqueFields[] = $name;
+                    self::$uniqueFields[] = $name;
                 }
             }
             return [$name, $type,$nn, $default];
@@ -100,7 +100,7 @@ namespace TStuff\Php\DBMapper {
           
           //set unique
           $fields = "`".$this->fieldPrimary[0]."`";
-          foreach ($this->uniqueFields as  $value) {
+          foreach (self::uniqueFields as  $value) {
               $fields.=",`".$value."`";
           }
           $content.= str_replace("{fields}",$fields,self::$uniqueTemplate);
@@ -133,6 +133,9 @@ namespace TStuff\Php\DBMapper {
             $x = trim($x);
             if($x == 'string') {
                 return "VARCHAR";
+            }
+            if($x == "bool"){
+                return "tinyint(1)";
             }
 
             return strtoupper($x);

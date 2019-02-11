@@ -53,12 +53,12 @@ use TStuff\Php\Transform\TextTransform;
                 if (isset($value['index']) && $value['index'] == "primary") {
 
                     $ai = $value['auto_increment'] ?? false;
-                    $tableMapper->addPrimayField($propertyName, $value['type'], $ai);
+                    $tableMapper->addPrimayField($value['field_name'], $value['type'], $ai);
 
                 } //create other fields
                 else 
                 {
-                    $this->addFieldToMapper($tableMapper,$classMetadata,$propertyName);
+                    $this->addFieldToMapper($tableMapper,$classMetadata["class_name"],$propertyName);
                 }
             }
             //return sql code for the table
@@ -66,7 +66,7 @@ use TStuff\Php\Transform\TextTransform;
         }
 
         private function addFieldToMapper(TDBTableBuilder $tb, string $className, string $fieldName){
-            $value = $classMetaData["field_meta"][$fieldName];
+            $value = $this->classMeta[$className]["field_meta"][$fieldName];
             $tb->addField(
                 $value['field_name'],
                 $value['type'],
@@ -99,6 +99,7 @@ use TStuff\Php\Transform\TextTransform;
 
         public function updateDatabase()
         {
+            $sqlExecutes = [];
             $this->databaseMeta = TDBMetaData::createDatabaseMeta($this->database);
             $this->classMeta = TDBMetaData::createClassMetadata($this->registeredClasses);
 
@@ -121,7 +122,7 @@ use TStuff\Php\Transform\TextTransform;
                             $data['size'] ?? null,
                             $data['default'] ?? null,
                             $data['index'] ?? null);
-                            echo $sql;
+                            $sqlExecutes[] = $sql;
                         }else{
                             //change field
                         }
@@ -131,12 +132,22 @@ use TStuff\Php\Transform\TextTransform;
                     foreach ($this->databaseMeta[$tableName] as $f => $prop) {
                         if(!array_key_exists(TextTransform::SnakeCaseToCamelCase($f),$classMetadata["field_meta"])){
                             $sql = TDBTableBuilder::getDeleteColumnSql($tableName,$f);
-                            echo $sql;
+                            $sqlExecutes[] = $sql;
                         }
                     }
                 }
             }
           
+            foreach ($sqlExecutes as  $sql) {
+                try{
+                    echo "Run: $sql <br/>";
+                    $this->database->exec($sql);
+                    //@todo for debug
+                    
+                }catch(\PDOException $ex){
+                    throw $ex;
+                }
+            }
 
         }
 
