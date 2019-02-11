@@ -5,8 +5,15 @@ namespace TStuff\Php\DBMapper   {
 
     class TDBMapper  {
 
-        //Table to object name
+       
+        //Register Class
+
+        //read doc
 
 
     }
+
+
+    
+
 }
