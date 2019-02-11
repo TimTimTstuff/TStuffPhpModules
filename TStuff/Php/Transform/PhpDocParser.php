@@ -4,6 +4,9 @@
 
 namespace TStuff\Php\Transform   {
 
+    /**
+     * Reference to Reflection http://php.net/manual/de/class.reflectionclass.php
+     */
     class PhpDocParser  {
 
         public static function getDocAsArray(string $className){
@@ -11,6 +14,7 @@ namespace TStuff\Php\Transform   {
             $refParam = $reflector->getProperties();
             $result = array();
             foreach ($refParam as $value) {
+                if(!$value->isPublic())continue;
                 $doc = $value->getDocComment();
                 $result[$value->name] = self::parseDocText($doc);
             }

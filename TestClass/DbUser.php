@@ -1,10 +1,10 @@
-<?php   
+<?php 
 
-    
-    
-    namespace TestClass   {
-    
-        class DbUser  {
+namespace TestClass   {
+
+    use TStuff\Php\DBMapper\DbObject;
+
+        class DbUser extends DbObject {
             /**
              * Undocumented variable
              *
@@ -29,7 +29,7 @@
              * Undocumented variable
              *
              * @var timestamp
-             * @DBMapper {"default":"timestamp"}
+             * @DBMapper {"default":"CURRENT_TIMESTAMP"}
              */
             public $createdOn;
             /**

@@ -1,0 +1,14 @@
+1. Auto create Tables from PHP Classes
+    -> Create a class and register it in the Mapper
+    -> Mapper -> Update -> Mapper checks db, updates db
+
+2. Auto create Object when load
+    -> Use mapper for loading records
+
+3. Object has methods aginst the db server
+    ->getById()
+    ->getByQuery()
+    ->update()
+    ->delete()
+    ->first()
+    
