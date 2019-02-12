@@ -1,8 +1,10 @@
 <?php
 
 session_start();
+include("config.php");ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-include(BASE_PATH . "TSTUFF/PHP/tstuff.php");
+include(BASE_PATH . "TStuff/Php/tstuff.php");
 include("inc/pdoconnect.php");
 
 ?>
@@ -55,3 +57,6 @@ include("inc/pdoconnect.php");
         </div>
     </body>
 </html>
+<?PHP
+
+
