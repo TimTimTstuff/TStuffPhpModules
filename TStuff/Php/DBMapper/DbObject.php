@@ -3,9 +3,16 @@
 
 namespace TStuff\Php\DBMapper   {
     use TStuff\Php\Transform as T;
-    class DbObject  {
+  abstract class DbObject   {
          
         protected $tableName;
+        protected $data;
+        
+
+        public function __construct(?array $data = null){
+            $this->data = $data;
+           
+        }
 
         /**
          * Returns an Metadata Array of the child class
@@ -43,35 +50,12 @@ namespace TStuff\Php\DBMapper   {
             return $result;
         }
 
-        /**
-         * Undocumented function
-         *
-         * @param int $id
-         * @return DbObject
-         */
-        public function single(int $id):DbObject{
-            return null;
+        public function save(){
+            
         }
 
-        /**
-         * Undocumented function
-         *
-         * @param string $query
-         * @return DbObject
-         */
-        public function first(string $query):DbObject{
-            return null;
-        }
+        public function remove(){
 
-        /**
-         * Undocumented function
-         *
-         * @param string $query
-         * @return DbObject[]
-         */
-        public function query(string $query):array{
-            return [];
         }
-
     }
 }
