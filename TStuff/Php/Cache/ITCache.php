@@ -13,7 +13,7 @@ namespace TStuff\Php\Cache  ;
          * @param integer $lifetime how long should a value be valid
          * @return void
          */
-        public function storeValue(string $category,string $key, mixed $value, int $lifetime);
+        public function storeValue(string $category,string $key,  $value, int $lifetime);
         /**
          * Get the value from the cache
          *
@@ -21,7 +21,7 @@ namespace TStuff\Php\Cache  ;
          * @param string $key
          * @return mixed
          */
-        public function getValue(string $category, string $key):mixed;
+        public function getValue(string $category, string $key);
         /**
          * invalidates a specific key or category
          *
