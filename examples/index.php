@@ -24,8 +24,8 @@ include("inc/pdoconnect.php");
                 <li><a href="?demo=3">WebApi</a></li>
              <li><a href="?demo=4">Reflection Doc Parser</a></li>
                 <li><a href="?demo=5">Cache</a></li>
-              <!--  <li><a href="?demo=6"></a></li>
-                <li><a href="?demo=7"></a></li>
+                <li><a href="?demo=6">Combine Modules</a></li>
+             <!--   <li><a href="?demo=7"></a></li>
                 <li><a href="?demo=8"></a></li>
                 <li><a href="?demo=9"></a></li>
                 <li><a href="?demo=10"></a></li> -->
@@ -52,9 +52,12 @@ include("inc/pdoconnect.php");
             case "5":
                 include("cache/cachtest.php");
             break;
+            case "6":
+                include("combine/disetup.php");
+            break;
             default:
                 echo "Choose a demo";
-                break;
+            break;
         }
         ?>
         </div>
