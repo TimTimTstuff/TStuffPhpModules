@@ -37,6 +37,7 @@ namespace TStuff\Php\Cache  ;
         }
 
         private static function generateCacheFileName($category){
+            $category = str_replace(array("/","\\"),array("-","-"),$category);
             $fileNameParts = [$category,self::$fileNameDelimiter,time(),self::$fileExtension];
             return implode("",$fileNameParts);
         }
@@ -102,6 +103,7 @@ namespace TStuff\Php\Cache  ;
         }
         
         public function invalidate(string $category, ?string $key = null):void{
+
             $this->loadOrSetCategory($category);
             if($key != null){
                 unset($this->cacheData[$category][$key]);
