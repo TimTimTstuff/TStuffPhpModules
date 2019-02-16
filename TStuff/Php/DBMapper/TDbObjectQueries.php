@@ -29,6 +29,12 @@ use TStuff\Php\Transform\PhpDocParser;
             
         }
 
+        public static function notifyUpdate(){
+            if(self::$cache == null)return;
+            $className = get_called_class();
+            self::$cache->invalidate(self::$cacheCategory.$className,self::$cacheMetadataKey);
+        }
+
         
         /**
          * Returns an Metadata Array of the child class
@@ -38,7 +44,7 @@ use TStuff\Php\Transform\PhpDocParser;
         public static function getMetadata():array{
             $className = get_called_class();
             if(self::$cache != null && self::$cache->existsKey(self::$cacheCategory.$className,self::$cacheMetadataKey)){
-                return json_decode(self::$cache->getValue(self::$cacheCategory.$className,self::$cacheMetadataKey));
+                return json_decode(self::$cache->getValue(self::$cacheCategory.$className,self::$cacheMetadataKey),true);
             }
 
             $meta = array();
@@ -83,6 +89,7 @@ use TStuff\Php\Transform\PhpDocParser;
          * @return DbObject
          */
         public static function single(string $query):DbObject{
+
             return new DbUser();
         }
         /**

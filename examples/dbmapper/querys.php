@@ -11,9 +11,12 @@ use TestClass\DbUser;
 use TestClass\DbProducts;
 use TStuff\Php\Cache\TFileCache;
 use TStuff\Php\DBMapper\DbObject;
+use TStuff\Php\DBMapper\TDBMapper;
 
-DbObject::setCacheAdapter(TFileCache::getInstance(CACHE_PATH));
+
+$mapper = new TDBMapper($pdo,TFileCache::getInstance(CACHE_PATH));
+
 $x = DbUser::single("something");
 $y = DbProducts::single("");
 
-
+print_r(DbUser::getMetadata());
