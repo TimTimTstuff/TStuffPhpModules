@@ -37,15 +37,17 @@ namespace TStuff\Php\Cache  ;
         }
 
         private static function generateCacheFileName($category){
-            $category = str_replace(array("/","\\"),array("-","-"),$category);
-            $fileNameParts = [$category,self::$fileNameDelimiter,time(),self::$fileExtension];
+          
+            $fileNameParts = [base64_encode($category),self::$fileNameDelimiter,time(),self::$fileExtension];
             return implode("",$fileNameParts);
         }
+
+       
 
         private static function getCategoryFromFileName($fileName){
             $r = explode(self::$fileNameDelimiter,
             str_replace(self::$fileExtension,"",$fileName));
-            return $r[0];
+            return base64_decode($r[0]);
         }
 
         private function getAllCacheFiles(){
