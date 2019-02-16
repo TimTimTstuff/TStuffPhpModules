@@ -59,7 +59,7 @@ namespace TStuff\Php\DBMapper {
                 $size = 500;
             }
 
-            if($type == "int" && $sieze = null){
+            if($type == "int" && $size == null){
                 $size = 11;
             }
 

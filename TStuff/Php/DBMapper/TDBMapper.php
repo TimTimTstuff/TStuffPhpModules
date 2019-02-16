@@ -1,10 +1,8 @@
 <?php
 
-
-
-
-namespace TStuff\Php\DBMapper {
+namespace TStuff\Php\DBMapper;
 use TStuff\Php\Transform\TextTransform;
+use TStuff\Php\Cache\ITCache;
     class TDBMapper
     {
 
@@ -16,23 +14,46 @@ use TStuff\Php\Transform\TextTransform;
         private $database;
 
         private $registeredClasses = [];
+        private $cachedRegisterClass = [];
 
         private $databaseMeta;
         private $classMeta;
+
+        /**
+         * Undocumented variable
+         *
+         * @var ITCache
+         */
+        private $cache;
+
+
 
         /**
          * Undocumented function
          *
          * @param \PDO $db
          */
-        public function __construct($db)
+        public function __construct(\PDO $db, ?ITCache $cache)
         {
             $this->database = $db;
+            $this->cache = $cache;
+            if($this->cache != null){
+                TDBMetaData::setCache($cache);
+                DbObject::setCacheAdapter($cache);
+            }
+            if($this->cache != null && $cache->existsKey("dbmapper","class")){
+                $this->cachedRegisterClass = json_decode($cache->getValue("dbmapper","class"),true);
+            }
         }
 
         public function registerObject(string $className) : void
         {
             if(in_array($className, $this->registeredClasses)) throw new \Exception("Class: $className already exists!");
+            if(!in_array($className,$this->cachedRegisterClass)){
+                $this->cachedRegisterClass[] = $className;
+                $this->refreshMetadata();
+                $this->cache->storeValue("dbmapper","class",json_encode($this->cachedRegisterClass));
+            }
             $this->registeredClasses[] = $className;
         }
 
@@ -42,8 +63,8 @@ use TStuff\Php\Transform\TextTransform;
              * @var DbObject $classObject
              */
 
-            $classObject = new $className();
-            $classMetadata = $classObject->getMetadata();
+           // $classObject = new $className();
+            $classMetadata = $className::getMetadata();
           
             $tableMapper = new TDBTableBuilder($classMetadata["table_name"], "InnoDB");
 
@@ -97,8 +118,18 @@ use TStuff\Php\Transform\TextTransform;
             }
         }
 
-        public function updateDatabase()
+
+        private function refreshMetadata(){
+              TDBMetaData::notifyUpdate();
+                DbObject::notifyUpdate();
+        }
+
+        public function updateDatabase(bool $force = false)
         {
+            if($force){
+              $this->refreshMetadata();
+            }
+
             $sqlExecutes = [];
             $this->databaseMeta = TDBMetaData::createDatabaseMeta($this->database);
             $this->classMeta = TDBMetaData::createClassMetadata($this->registeredClasses);
@@ -109,6 +140,7 @@ use TStuff\Php\Transform\TextTransform;
 
                 if (!array_key_exists($tableName, $this->databaseMeta)) {
                     $this->createTableFromClass($classMetadata['namespace'] . "\\" . $classMetadata['class_name']);
+                    TDBMetaData::notifyUpdate();
                 }else{
                     
                     foreach($classMetadata['field_meta'] as $propname => $data){             
@@ -151,4 +183,3 @@ use TStuff\Php\Transform\TextTransform;
         }
 
     }
-}

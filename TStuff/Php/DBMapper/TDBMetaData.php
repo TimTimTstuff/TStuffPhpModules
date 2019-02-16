@@ -1,11 +1,35 @@
 <?php
 
 
-namespace TStuff\Php\DBMapper   {
 
-   abstract class TDBMetaData  {
 
-        public static function createClassMetadata(array $registeredClasses):array
+namespace TStuff\Php\DBMapper;
+use TStuff\Php\Cache\ITCache;
+    abstract class TDBMetaData
+    {
+
+        private static $changeCategory = "db_meta";
+        private static $cacheMetaKey = "meta";
+
+
+        /**
+         * Undocumented variable
+         *
+         * @var ITCache
+         */
+        private static $cache;
+
+        public static function notifyUpdate(){
+            if(self::$cache == null)return;
+            self::$cache->invalidate(self::$changeCategory,self::$cacheMetaKey);
+        }
+
+
+        public static function setCache(ITCache $cache ){
+            self::$cache = $cache;
+        }
+
+        public static function createClassMetadata(array $registeredClasses) : array
         {
             $meta = [];
             foreach ($registeredClasses as $value) {
@@ -16,8 +40,11 @@ namespace TStuff\Php\DBMapper   {
             return $meta;
         }
 
-        public static function createDatabaseMeta(\PDO $pdo):array
+        public static function createDatabaseMeta(\PDO $pdo) : array
         {
+            if(self::$cache != null && self::$cache->existsKey(self::$changeCategory,self::$cacheMetaKey)){
+                return json_decode(self::$cache->getValue(self::$changeCategory,self::$cacheMetaKey),true);
+            }
              //get tables
             $tableList = $pdo->prepare("SHOW TABLES");
             $tableList->execute();
@@ -36,7 +63,7 @@ namespace TStuff\Php\DBMapper   {
 
 
             }
-           return $tables;
+            self::$cache->storeValue(self::$changeCategory,self::$cacheMetaKey,json_encode($tables),60*60*24);
+            return $tables;
         }
     }
-}
