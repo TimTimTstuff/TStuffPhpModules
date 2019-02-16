@@ -25,17 +25,12 @@ use TStuff\Php\Transform\PhpDocParser;
             self::$cache = $cache;
         }
 
-        protected static function buildMetadata(){
-            
-        }
-
         public static function notifyUpdate(){
             if(self::$cache == null)return;
             $className = get_called_class();
             self::$cache->invalidate(self::$cacheCategory.$className,self::$cacheMetadataKey);
         }
 
-        
         /**
          * Returns an Metadata Array of the child class
          *
@@ -80,7 +75,6 @@ use TStuff\Php\Transform\PhpDocParser;
             return $result;
         }
 
-
         /**
          * Returns a single object or throws an Exception if no or multiple records are found
          *  Query example: "name = 'test' and age > 1"
@@ -90,7 +84,8 @@ use TStuff\Php\Transform\PhpDocParser;
          */
         public static function single(string $query):DbObject{
 
-            return new DbUser();
+
+           return new DbUser();
         }
         /**
          * Returns a single object or the default object

@@ -1,9 +1,6 @@
 <?php
 
-
-
-
-namespace TStuff\Php\DBMapper {
+namespace TStuff\Php\DBMapper;
 use TStuff\Php\Transform\TextTransform;
 use TStuff\Php\Cache\ITCache;
     class TDBMapper
@@ -186,4 +183,3 @@ use TStuff\Php\Cache\ITCache;
         }
 
     }
-}

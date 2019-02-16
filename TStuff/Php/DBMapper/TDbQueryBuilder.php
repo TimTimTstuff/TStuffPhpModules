@@ -33,7 +33,7 @@ abstract class TDbQueryBuilder
 
     //Default CRUD
     public static $defaultSelect = "SELECT {fields} FROM {table} WHERE {where} ";
-    public static $defaultUpdate = "UPDATE ";
+public static $defaultUpdate = "UPDATE {table} WHERE {where}";
     public static $defaultInsert = "INSERT INTO {table} ({fields}) VALUES ({field_values_insert})";
     public static $defaultDelete = "DELETE FROM {table} WHERE {where}";
 
@@ -51,8 +51,25 @@ abstract class TDbQueryBuilder
     public static $in = "{field} IN ({values})";
     public static $notIn = "{field} NOT IN ({values})";
     
-    private static function buildQuery($replaceArray){
-        
+    public static function buildQuery(string $queryType, TDbQueryObject $replacementObject){
+        $queryTemplate = "";
+        switch(strtolower(trim($queryType))){
+            case "insert":
+                $queryTemplate = self::$defaultInsert;
+            break;
+            case "update":
+                $queryTemplate = self::$defaultUpdate;
+            break;
+            case "delete":
+                $queryTemplate = self::$defaultDelete;
+            break;
+            case "select":
+                $queryTemplate = self::$defaultSelect;
+            break;
+        }      
+        $search = array_keys((array)$replacementObject);
+        $replace = array_values((array)$replacementObject);
+        return str_replace($search,$replace,$queryTemplate);
     }
 
     public static function sqlSingle($table, $where){
