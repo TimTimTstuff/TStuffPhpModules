@@ -42,8 +42,8 @@ use TStuff\Php\Transform\TextTransform;
              * @var DbObject $classObject
              */
 
-            $classObject = new $className();
-            $classMetadata = $classObject->getMetadata();
+           // $classObject = new $className();
+            $classMetadata = $className::getMetadata();
           
             $tableMapper = new TDBTableBuilder($classMetadata["table_name"], "InnoDB");
 

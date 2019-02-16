@@ -3,7 +3,7 @@
 
 namespace TStuff\Php\DBMapper;   
 
-    interface TDbObjectQuerys  {
+    interface TDbObjectQueries  {
         /**
          * Returns a single object or throws an Exception if no or multiple records are found
          *  Query example: "name = 'test' and age > 1"
@@ -71,4 +71,21 @@ namespace TStuff\Php\DBMapper;
          * @return void
          */
         public static function updateBy(string $query,array $fieldValueArray):void;
+
+        /**
+         * creates a new object
+         *
+         * @param DbObject $object
+         * @return DbObject
+         */
+        public static function create(DbObject $object):DbObject;
+
+        /**
+         * creates a list of objects
+         *
+         * @param DBObject[] $objects
+         * @return DbObject[]
+         */
+        public static function createAll(array $objects):array;
+        
     }
