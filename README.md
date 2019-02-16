@@ -2,8 +2,8 @@
 PHP Things
 
 
-## DI Container
-TStuff/Php/DI  - Run examples/dicontainer.php
-
-## Text Transform
-TStuff/Php/Transform - Run examples/texttransfrom.php
+## Content
+* DBMapper: Creation of Tables and SQLQuerys 
+* TApi: Simple to use WebApi
+* Cache: PHP file cache
+* DIContainer
