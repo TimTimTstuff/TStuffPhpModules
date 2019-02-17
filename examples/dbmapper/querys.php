@@ -30,11 +30,11 @@ $x->field = "name,password,last_login,is_admin";
 
 
 $y = new DbUser();
-$y->name = "timo";
-$y->lastLogin = 0;
-$y->password = "password";
-$y->isAdmin = false;
+$y->name = "timo2";
+$y->lastLogin = time();
+$y->password = "massword";
+$y->isAdmin = true;
 
-$y->save();
+DbUser::create($y);
 
 
