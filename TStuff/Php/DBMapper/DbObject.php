@@ -36,6 +36,20 @@ namespace TStuff\Php\DBMapper {
          */
         public function save()
         {
+           $updateList = $this->getUpdateList();
+
+            if($isNew){
+                //insert
+            }else{
+                //update
+            }
+
+            foreach ($updateList as $key => $value) {
+                $this->data[$key] = $value[0];
+            }
+        }
+
+        public function getUpdateList():array{
             $updateList = [];
             $isNew = $this->primaryFieldName == null;
             $fields = (array)$this;
@@ -50,25 +64,10 @@ namespace TStuff\Php\DBMapper {
                     
                 }
             }
-
-            if($isNew){
-                //insert
-            }else{
-                //update
-            }
-
-            foreach ($updateList as $key => $value) {
-                $this->data[$key] = $value[0];
-            }
-
-
+            return $updateList;
         }
 
-        public function remove()
-        {
-
-        }
-
+        
 
     }
 }

@@ -16,10 +16,21 @@ use TStuff\Php\Transform\PhpDocParser;
          *
          * @var ITCache
          */
-        private static $cache;
+        protected static $cache;
+
+        /**
+         * Undocumented variable
+         *
+         * @var \PDO
+         */
+        protected static $pdo;
 
         private static $cacheCategory = "dbmapper_";
         private static $cacheMetadataKey = "meta";
+
+        public static function setPdo(\Pdo $pdo){
+            self::$pdo = $pdo;
+        }
 
         public static function setCacheAdapter(ITCache $cache){
             self::$cache = $cache;
@@ -29,6 +40,25 @@ use TStuff\Php\Transform\PhpDocParser;
             if(self::$cache == null)return;
             $className = get_called_class();
             self::$cache->invalidate(self::$cacheCategory.$className,self::$cacheMetadataKey);
+        }
+
+        private static function runQuery($sql){
+           $stmt = self::$pdo->query($sql);
+          
+           // if($stmt->errorCode() != 0){
+               echo $sql;
+                print_r($stmt->errorInfo());
+           // }
+        }
+
+        private static function runExec($sql){
+            $stmt = self::$pdo->exec($sql);
+          
+            // if($stmt->errorCode() != 0){
+                echo $sql."<br/>";
+                echo $stmt;
+                print_r(self::$pdo->lastInsertId());
+           // }
         }
 
         /**
@@ -73,6 +103,10 @@ use TStuff\Php\Transform\PhpDocParser;
                 self::$cache->storeValue(self::$cacheCategory.$className,self::$cacheMetadataKey,json_encode($result),60*60*24);
             }
             return $result;
+        }
+
+        private static function getTableName():string{
+            return self::getMetadata()["table_name"];
         }
 
         /**
@@ -171,6 +205,19 @@ use TStuff\Php\Transform\PhpDocParser;
          */
         public static function create(DbObject $object):DbObject{
 
+            $sObject = new TDbQueryObject();
+            $sObject->table = self::getTableName();
+            $data = $object->getUpdateList();
+            $sObject->fields =array_keys($data);
+            $valueArray = [];
+            foreach ($data as $key => $value) {
+               
+                $valueArray[] = $value[0];
+            }
+            $sObject->field_values_insert =$valueArray;
+            $query = TDbQueryBuilder::buildQuery(self::$pdo,"insert",$sObject);
+            self::runExec($query);
+            return $object;
         }
 
         /**

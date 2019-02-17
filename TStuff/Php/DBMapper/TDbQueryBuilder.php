@@ -12,7 +12,7 @@ abstract class TDbQueryBuilder
         "field" => "",
         "offset" => "",
         "count" => "",
-        "values" =>""
+        "values" => ""
 
     ];
 
@@ -33,7 +33,7 @@ abstract class TDbQueryBuilder
 
     //Default CRUD
     public static $defaultSelect = "SELECT {fields} FROM {table} WHERE {where} ";
-public static $defaultUpdate = "UPDATE {table} WHERE {where}";
+    public static $defaultUpdate = "UPDATE {table} WHERE {where}";
     public static $defaultInsert = "INSERT INTO {table} ({fields}) VALUES ({field_values_insert})";
     public static $defaultDelete = "DELETE FROM {table} WHERE {where}";
 
@@ -50,30 +50,72 @@ public static $defaultUpdate = "UPDATE {table} WHERE {where}";
     public static $isNotNull = "{field} IS NOT NULL";
     public static $in = "{field} IN ({values})";
     public static $notIn = "{field} NOT IN ({values})";
-    
-    public static function buildQuery(string $queryType, TDbQueryObject $replacementObject){
+
+    public static function buildQuery(\Pdo $pdo, string $queryType, TDbQueryObject $replacementObject):string
+    {
         $queryTemplate = "";
-        switch(strtolower(trim($queryType))){
+        switch (strtolower(trim($queryType))) {
             case "insert":
                 $queryTemplate = self::$defaultInsert;
-            break;
+                break;
             case "update":
                 $queryTemplate = self::$defaultUpdate;
-            break;
+                break;
             case "delete":
                 $queryTemplate = self::$defaultDelete;
-            break;
+                break;
             case "select":
                 $queryTemplate = self::$defaultSelect;
-            break;
-        }      
+                break;
+        }
+
         $search = array_keys((array)$replacementObject);
+        $tSearch = [];
+        foreach ($search as $key => $value) {
+            $tSearch[] = "{" . $value . "}";
+        }
+
         $replace = array_values((array)$replacementObject);
-        return str_replace($search,$replace,$queryTemplate);
+        
+        foreach ($replace as $key => $value) {
+            if ($key == 2) {
+                $replace[$key] = implode(", ", $value);
+            } elseif ($key == 3) {
+                $v = [];
+                foreach ($value as $innerKey => $innerValue) {
+
+                    switch (strtolower(gettype($innerValue))) {
+                        case "boolean":
+                            $replace[$key][$innerKey] = $innerValue === true ? 1 : 0;
+                            break;
+                        case "null":
+                            $replace[$key][$innerKey] = "NULL";
+                            break;
+                        case "integer":
+                        case "double":
+                            $replace[$key][$innerKey] = $innerValue;
+                            break;
+                        case "string":
+                            $replace[$key][$innerKey] = $pdo->quote($innerValue);
+                            break;
+                        default:
+                            $replace[$key][$innerKey] = $pdo->quote(json_encode($innerValue));
+                            break;
+
+                    }
+
+                }
+                $replace[$key] = implode(", ",$replace[$key]);
+            }
+
+        }
+
+        return str_replace($tSearch, $replace, $queryTemplate);
     }
 
-    public static function sqlSingle($table, $where){
-        
+    public static function sqlSingle($table, $where)
+    {
+
     }
 
 
