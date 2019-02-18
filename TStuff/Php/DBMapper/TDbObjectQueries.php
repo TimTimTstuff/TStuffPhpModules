@@ -42,13 +42,14 @@ use TStuff\Php\Transform\PhpDocParser;
             self::$cache->invalidate(self::$cacheCategory.$className,self::$cacheMetadataKey);
         }
 
-        private static function runQuery($sql){
+        private static function runQuery($sql): \PDOStatement{
            $stmt = self::$pdo->query($sql);
           
-           // if($stmt->errorCode() != 0){
+            if($stmt->errorCode() != 0){
                echo $sql;
                 print_r($stmt->errorInfo());
-           // }
+            }
+           return $stmt;
         }
 
         private static function runExec($sql){
@@ -109,6 +110,14 @@ use TStuff\Php\Transform\PhpDocParser;
             return self::getMetadata()["table_name"];
         }
 
+        private static function getFields():array{
+            $f = array();
+            foreach (self::getMetadata()["field_meta"] as $key => $value) {
+              $f[] = $value["field_name"];
+            }
+            return $f;
+        }
+
         /**
          * Returns a single object or throws an Exception if no or multiple records are found
          *  Query example: "name = 'test' and age > 1"
@@ -157,7 +166,21 @@ use TStuff\Php\Transform\PhpDocParser;
          * @return array
          */
         public static function all(string $query):array{
+            $sObject = new TDbQueryObject();
+            $sObject->table = self::getTableName();
+            $sObject->where = $query;
+            $sObject->fields = self::getFields();
+         
 
+            $query = TDbQueryBuilder::buildQuery(self::$pdo,"select",$sObject);
+            $std = self::runQuery($query);
+            $resultObject = [];
+            $className = get_called_class();
+            foreach($std->fetchAll(\PDO::FETCH_ASSOC) as $row){
+                $resultObject[] = new $className($row);
+            }
+            
+            return $resultObject;
         }
         /**
          * deletes all given records

@@ -15,6 +15,13 @@ namespace TStuff\Php\DBMapper {
         {
             if ($data != null) {
                 $this->data = $data;
+                foreach ($this->data as $key => $value) {
+                    $fields = self::getMetadata()["field_meta"];
+                    //get primary field
+                    
+                    $fName = T\TextTransform::SnakeCaseToCamelCase($key);
+                    $this->$fName = $value;
+                }
             } else {
                 $fields = self::getMetadata()["field_meta"];
                  $data = [];
@@ -38,10 +45,10 @@ namespace TStuff\Php\DBMapper {
         {
            $updateList = $this->getUpdateList();
 
-            if($isNew){
-                //insert
+            if($this->primaryValue == null){
+                echo "create";
             }else{
-                //update
+                echo "update";
             }
 
             foreach ($updateList as $key => $value) {

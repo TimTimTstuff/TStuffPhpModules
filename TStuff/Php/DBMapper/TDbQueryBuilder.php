@@ -78,9 +78,9 @@ abstract class TDbQueryBuilder
         $replace = array_values((array)$replacementObject);
         
         foreach ($replace as $key => $value) {
-            if ($key == 2) {
+            if ($key == 2 && $value != null) {
                 $replace[$key] = implode(", ", $value);
-            } elseif ($key == 3) {
+            } elseif ($key == 3 && $value != null) {
                 $v = [];
                 foreach ($value as $innerKey => $innerValue) {
 
