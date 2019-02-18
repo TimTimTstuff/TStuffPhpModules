@@ -35,6 +35,14 @@ $y->lastLogin = time();
 $y->password = "massword";
 $y->isAdmin = true;
 
-DbUser::create($y);
+//DbUser::create($y);
+/**
+ * @var DbUser[] $myUsers
+ */
+$myUsers = DbUser::all(" name like '%timo%'");
 
-
+foreach($myUsers as $k => $u){
+    echo $u->name." <br/>";
+    $u->name = $u->name."_".$k;
+    $u->save();
+}
