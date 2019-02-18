@@ -51,73 +51,104 @@ abstract class TDbQueryBuilder
     public static $in = "{field} IN ({values})";
     public static $notIn = "{field} NOT IN ({values})";
 
-    public static function buildQuery(\Pdo $pdo, string $queryType, TDbQueryObject $replacementObject):string
+    /**
+     * Creates the query for the table
+     *
+     * @todo refactor this function
+     * 
+     * @param \Pdo $pdo
+     * @param string $queryType (insert, update, create, delete)
+     * @param TDbQueryObject $replacementObject
+     * @return string sql query
+     */
+    public static function buildQuery(\Pdo $pdo, string $queryType, TDbQueryObject $replacementObject) : string
     {
-        $queryTemplate = "";
-        switch (strtolower(trim($queryType))) {
-            case "insert":
-                $queryTemplate = self::$defaultInsert;
-                break;
-            case "update":
-                $queryTemplate = self::$defaultUpdate;
-                break;
-            case "delete":
-                $queryTemplate = self::$defaultDelete;
-                break;
-            case "select":
-                $queryTemplate = self::$defaultSelect;
-                break;
+
+        $replace = array_values((array)$replacementObject);
+
+
+        if ($replacementObject->fields != null) {
+            //2 = fields
+            $replace[2] = implode(", ", $replacementObject->fields);
         }
+
+        if ($replacementObject->field_values_insert != null) {
+            //3 = field_values_insert
+            $replace[3] = self::getFormatedValues($replacementObject->field_values_insert,$pdo);
+
+        }
+
+        if ($replacementObject->values != null) {
+
+            //7 = values
+           $replace[7] = self::getFormatedValues($replacementObject->values,$pdo);
+        }
+
+        return str_replace(self::getSearchArray($replacementObject), $replace, self::getTemplate($queryType));
+    }
+
+    private static function getFormatedValues(array $input, \PDO $pdo)
+    {
+        $v = [];
+        foreach ($input as $innerKey => $innerValue) {
+
+            switch (strtolower(gettype($innerValue))) {
+                case "boolean":
+                    $v[] = $innerValue === true ? 1 : 0;
+                    break;
+                case "null":
+                    $v[] = "NULL";
+                    break;
+                case "integer":
+                case "double":
+                    $v[] = $innerValue;
+                    break;
+                case "string":
+                    $v[] = $pdo->quote($innerValue);
+                    break;
+                default:
+                    $v[] = $pdo->quote(json_encode($innerValue));
+                    break;
+
+            }
+
+        }
+        return implode(", ", $v);
+    }
+
+    private static function getSearchArray(TDbQueryObject $replacementObject) : array
+    {
 
         $search = array_keys((array)$replacementObject);
         $tSearch = [];
         foreach ($search as $key => $value) {
             $tSearch[] = "{" . $value . "}";
         }
-
-        $replace = array_values((array)$replacementObject);
-        
-        foreach ($replace as $key => $value) {
-            if ($key == 2 && $value != null) {
-                $replace[$key] = implode(", ", $value);
-            } elseif ($key == 3 && $value != null) {
-                $v = [];
-                foreach ($value as $innerKey => $innerValue) {
-
-                    switch (strtolower(gettype($innerValue))) {
-                        case "boolean":
-                            $replace[$key][$innerKey] = $innerValue === true ? 1 : 0;
-                            break;
-                        case "null":
-                            $replace[$key][$innerKey] = "NULL";
-                            break;
-                        case "integer":
-                        case "double":
-                            $replace[$key][$innerKey] = $innerValue;
-                            break;
-                        case "string":
-                            $replace[$key][$innerKey] = $pdo->quote($innerValue);
-                            break;
-                        default:
-                            $replace[$key][$innerKey] = $pdo->quote(json_encode($innerValue));
-                            break;
-
-                    }
-
-                }
-                $replace[$key] = implode(", ",$replace[$key]);
-            }
-
-        }
-
-        return str_replace($tSearch, $replace, $queryTemplate);
+        return $tSearch;
     }
 
-    public static function sqlSingle($table, $where)
+    private static function getTemplate(string $queryType) : string
     {
 
-    }
+        switch (strtolower(trim($queryType))) {
+            case "insert":
+                return self::$defaultInsert;
+                break;
+            case "update":
+                return self::$defaultUpdate;
+                break;
+            case "delete":
+                return self::$defaultDelete;
+                break;
+            case "select":
+                return self::$defaultSelect;
+                break;
+            default:
+                return "";
 
+
+        }
+    }
 
 
 

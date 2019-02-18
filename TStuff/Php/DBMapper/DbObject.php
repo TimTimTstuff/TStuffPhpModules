@@ -15,13 +15,21 @@ namespace TStuff\Php\DBMapper {
         {
             if ($data != null) {
                 $this->data = $data;
-                foreach ($this->data as $key => $value) {
-                    $fields = self::getMetadata()["field_meta"];
-                    //get primary field
-                    
+             
+                foreach ($this->data as $key => $value) {  
+                   
+                    if($this->getPrimaryFieldName() == $key){
+                        
+                        $this->primaryValue = $value;
+                        continue;
+                    }
                     $fName = T\TextTransform::SnakeCaseToCamelCase($key);
+                    
+                  
                     $this->$fName = $value;
+
                 }
+
             } else {
                 $fields = self::getMetadata()["field_meta"];
                  $data = [];
@@ -34,6 +42,22 @@ namespace TStuff\Php\DBMapper {
                 }
             }
 
+        }
+
+        public function getPrimaryFieldName():?string{
+            if($this->primaryFieldName == null){
+                $meta = self::getMetadata();
+                foreach ($meta["field_meta"] as $key => $value) {
+                    if(($value['index']??"none") == "primary"){
+                        $this->primaryFieldName = $value['field_name'];
+                    }
+                }
+            }
+            return $this->primaryFieldName;
+        }
+
+        public function getPrimaryFieldValue(){
+            return $this->primaryValue;
         }
 
         /**
