@@ -1,5 +1,5 @@
 <?php
-namespace TStuff\Php\DBMapper;
+namespace TStuff\Php\DBMapper\Queries;
 
 abstract class TDbQueryBuilder
 {

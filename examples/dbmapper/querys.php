@@ -13,7 +13,7 @@ use TestClass\DbProducts;
 use TStuff\Php\Cache\TFileCache;
 use TStuff\Php\DBMapper\DbObject;
 use TStuff\Php\DBMapper\TDBMapper;
-use TStuff\Php\DBMapper\TDbQueryObject;
+use TStuff\Php\DBMapper\Queries\TDbQueryObject;
 
 
 $mapper = new TDBMapper($pdo,TFileCache::getInstance(CACHE_PATH));
@@ -57,7 +57,7 @@ $p2->name = "My second Product";
 
 DbProducts::createAll([$p,$p2]);
 
-DbProducts::deleteBy("1=1 limit 1, 10 ");
+DbProducts::deleteBy("1=1");
 
 $products = DbProducts::all("1 = 1");
 

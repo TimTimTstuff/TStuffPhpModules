@@ -3,6 +3,8 @@
 namespace TStuff\Php\DBMapper;
 use TStuff\Php\Transform\TextTransform;
 use TStuff\Php\Cache\ITCache;
+use TStuff\Php\DBMapper\Queries\TDBTableBuilder;
+
     class TDBMapper
     {
 

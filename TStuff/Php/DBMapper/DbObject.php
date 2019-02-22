@@ -1,9 +1,10 @@
 <?php
 
 
-namespace TStuff\Php\DBMapper {
+namespace TStuff\Php\DBMapper;
     use TStuff\Php\Transform as T;
     use TestClass\DbUser;
+    use TStuff\Php\DBMapper\Queries\TDbObjectQueries;
 
     abstract class DbObject extends TDbObjectQueries
     {
@@ -101,4 +102,3 @@ namespace TStuff\Php\DBMapper {
         
 
     }
-}

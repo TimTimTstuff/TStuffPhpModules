@@ -1,12 +1,13 @@
 <?php
 
 
-namespace TStuff\Php\DBMapper;
+namespace TStuff\Php\DBMapper\Queries;
 
 use TestClass\DbUser;
 use TStuff\Php\Cache\ITCache;
 use TStuff\Php\Transform\TextTransform;
 use TStuff\Php\Transform\PhpDocParser;
+use TStuff\Php\DBMapper\DbObject;
 
 
 abstract class TDbObjectQueries
