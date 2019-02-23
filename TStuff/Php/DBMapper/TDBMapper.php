@@ -3,6 +3,8 @@
 namespace TStuff\Php\DBMapper;
 use TStuff\Php\Transform\TextTransform;
 use TStuff\Php\Cache\ITCache;
+use TStuff\Php\DBMapper\Queries\TDBTableBuilder;
+
     class TDBMapper
     {
 
@@ -40,6 +42,7 @@ use TStuff\Php\Cache\ITCache;
             if($this->cache != null){
                 TDBMetaData::setCache($cache);
                 DbObject::setCacheAdapter($cache);
+                DbObject::setPdo($db);
             }
             if($this->cache != null && $cache->existsKey("dbmapper","class")){
                 $this->cachedRegisterClass = json_decode($cache->getValue("dbmapper","class"),true);

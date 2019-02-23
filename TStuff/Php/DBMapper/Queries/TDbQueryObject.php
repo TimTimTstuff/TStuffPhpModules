@@ -1,5 +1,5 @@
 <?php
-namespace TStuff\Php\DBMapper  ; 
+namespace TStuff\Php\DBMapper\Queries  ; 
 
     class TDbQueryObject  {
         /**
@@ -51,4 +51,11 @@ namespace TStuff\Php\DBMapper  ;
          * @var array
          */
         public $values;
+
+        /**
+         * assoc array for update
+         *
+         * @var array
+         */
+        public $fields_update;
     }

@@ -13,7 +13,7 @@
  * ) ENGINE = InnoDB;
  */
 
-namespace TStuff\Php\DBMapper {
+namespace TStuff\Php\DBMapper\Queries {
 
     class TDBTableBuilder
     {
