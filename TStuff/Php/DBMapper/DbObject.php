@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @todo Have done a big mistake, the parent class references the child class, have to fix that somehow, works now, is bad.. 
+ */
 
 namespace TStuff\Php\DBMapper;
     use TStuff\Php\Transform as T;

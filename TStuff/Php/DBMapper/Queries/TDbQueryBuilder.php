@@ -33,9 +33,12 @@ abstract class TDbQueryBuilder
 
     //Default CRUD
     public static $defaultSelect = "SELECT {fields} FROM {table} WHERE {where} ";
-    public static $defaultUpdate = "UPDATE {table} WHERE {where}";
+    public static $defaultUpdate = "UPDATE {table} SET ({fields_update})  WHERE {where}";
     public static $defaultInsert = "INSERT INTO {table} ({fields}) VALUES ({field_values_insert})";
     public static $defaultDelete = "DELETE FROM {table} WHERE {where}";
+
+    //update field template
+    public static $updateFieldTemplate = "{field} = {value}";
 
    //Extended Filter
     public static $orderBy = "ORDER BY {field}";
@@ -56,12 +59,12 @@ abstract class TDbQueryBuilder
      *
      * @todo refactor this function
      * 
-     * @param \Pdo $pdo
+     * @param \PDO $pdo
      * @param string $queryType (insert, update, create, delete)
      * @param TDbQueryObject $replacementObject
      * @return string sql query
      */
-    public static function buildQuery(\Pdo $pdo, string $queryType, TDbQueryObject $replacementObject) : string
+    public static function buildQuery(\PDO $pdo, string $queryType, TDbQueryObject $replacementObject) : string
     {
 
         $replace = array_values((array)$replacementObject);

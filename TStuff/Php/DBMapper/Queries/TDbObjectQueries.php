@@ -118,7 +118,7 @@ abstract class TDbObjectQueries
         }
         $result["field_meta"] = $fieldMeta;
         if (self::$cache != null) {
-            self::$cache->storeValue(self::$cacheCategory . $className, self::$cacheMetadataKey, json_encode($result), 60 * 60 * 24);
+            self::$cache->storeValue(self::$cacheCategory . $className, self::$cacheMetadataKey, json_encode($result), (int)(60 * 60 * 24));
         }
         return $result;
     }
@@ -162,7 +162,7 @@ abstract class TDbObjectQueries
      */
     public static function singleOrDefault(string $query, ? DbObject $default = null) : ? DbObject
     {
-
+        return null;
     }
     /**
      * Returns the first element of the resultset. Throws an exception if no record is found
@@ -172,7 +172,7 @@ abstract class TDbObjectQueries
      */
     public static function first(string $query) : ? DbObject
     {
-
+        return null;
     }
     /**
      * Returns the first record of the result or default if the result is empty
@@ -183,7 +183,7 @@ abstract class TDbObjectQueries
      */
     public static function firstOrDefault(string $query, ? DbObject $default = null) : ? DbObject
     {
-
+        return null;
     }
     /**
      * Return all records by query
@@ -236,7 +236,10 @@ abstract class TDbObjectQueries
      */
     public static function update(array $objects) : void
     {
-
+        /** @var DbObject $value */
+        foreach ($objects as $key => $value) {
+            $value->save();
+        }
     }
     /**
      * deletes all records by query
@@ -262,7 +265,13 @@ abstract class TDbObjectQueries
      */
     public static function updateBy(string $query, array $fieldValueArray) : void
     {
-
+        $sObject = new TDbQueryObject();
+        $sObject->table = self::getTableName();
+        $sObject->where = $query;
+        $sObject->fields = array_Keys($fieldValueArray);
+        $sObject->values = array_values($fieldValueArray);
+        $query = TDbQueryBuilder::buildQuery(self::$pdo,"update",$sObject);
+        print_r($query);
     }
 
     /**

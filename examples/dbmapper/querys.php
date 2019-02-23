@@ -57,12 +57,12 @@ $p2->name = "My second Product";
 
 DbProducts::createAll([$p,$p2]);
 
-DbProducts::deleteBy("1=1");
+//DbProducts::deleteBy("1=1");
 
 $products = DbProducts::all("1 = 1");
 
 foreach($products as $v){
-    echo $v->name." <br/>";
+    echo $v->name." Stock: $v->inStock"." <br/>";
 }
 
 //DbProducts::delete($products);
@@ -79,3 +79,6 @@ foreach($myUsers as $k => $u){
 }
 
 DbUser::delete(DbUser::all("1=1 limit 1, 100"));
+
+
+DbProducts::updateBy("name like '%first%'",array("in_stock"=>10));
