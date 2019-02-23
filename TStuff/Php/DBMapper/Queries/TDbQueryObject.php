@@ -51,4 +51,11 @@ namespace TStuff\Php\DBMapper\Queries  ;
          * @var array
          */
         public $values;
+
+        /**
+         * assoc array for update
+         *
+         * @var array
+         */
+        public $fields_update;
     }

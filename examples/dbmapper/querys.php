@@ -15,11 +15,10 @@ use TStuff\Php\DBMapper\DbObject;
 use TStuff\Php\DBMapper\TDBMapper;
 use TStuff\Php\DBMapper\Queries\TDbQueryObject;
 
-
+/** @var \PDO $pdo */
 $mapper = new TDBMapper($pdo,TFileCache::getInstance(CACHE_PATH));
 
-$x = DbUser::single("something");
-$y = DbProducts::single("");
+
 
 //print_r(DbUser::getMetadata());
 
@@ -32,7 +31,7 @@ $x->field = "name,password,last_login,is_admin";
 $y = new DbUser();
 $y->name = "timo2";
 $y->lastLogin = time();
-$y->password = "massword";
+$y->password = "test";
 $y->isAdmin = true;
 
 
@@ -61,9 +60,12 @@ DbProducts::createAll([$p,$p2]);
 
 $products = DbProducts::all("1 = 1");
 
+/** @var DbProducts $v */
 foreach($products as $v){
-    echo $v->name." Stock: $v->inStock"." <br/>";
+    echo $v->getPrimaryFieldValue()." - ". $v->name." Stock: $v->inStock"." <br/>";
 }
+
+print_r(DbProducts::single("product_id > 1"));
 
 //DbProducts::delete($products);
 
@@ -73,7 +75,7 @@ foreach($products as $v){
 $myUsers = DbUser::all(" 1=1 ");
 
 foreach($myUsers as $k => $u){
-    echo $u->name." <br/>";
+    echo $u->getPrimaryFieldValue()." - ". $u->name." <br/>";
     
 
 }

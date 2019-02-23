@@ -149,9 +149,21 @@ abstract class TDbObjectQueries
      */
     public static function single(string $query) : DbObject
     {
+        $sObject = new TDbQueryObject();
+        $sObject->table = self::getTableName();
+        $sObject->where = $query;
+        $sObject->fields = self::getFields();
 
 
-        return new DbUser();
+        $query = TDbQueryBuilder::buildQuery(self::$pdo, "select", $sObject);
+        $std = self::runQuery($query);
+        $className = get_called_class();
+        $count = $std->rowCount();
+        if($count > 1 || $count < 1)
+            throw new TDbQueryResultException("Single returns not only one record");
+        
+        $data = $std->fetch(\PDO::FETCH_ASSOC);
+        return new $className($data);
     }
     /**
      * Returns a single object or the default object
@@ -162,7 +174,23 @@ abstract class TDbObjectQueries
      */
     public static function singleOrDefault(string $query, ? DbObject $default = null) : ? DbObject
     {
-        return null;
+        $sObject = new TDbQueryObject();
+        $sObject->table = self::getTableName();
+        $sObject->where = $query;
+        $sObject->fields = self::getFields();
+
+
+        $query = TDbQueryBuilder::buildQuery(self::$pdo, "select", $sObject);
+        $std = self::runQuery($query);
+        $className = get_called_class();
+        $count = $std->rowCount();
+        if($count > 1)
+            throw new TDbQueryResultException("Single returns not only one record");
+
+        if($count == 0) return null;
+        
+        $data = $std->fetch(\PDO::FETCH_ASSOC);
+        return new $className($data);
     }
     /**
      * Returns the first element of the resultset. Throws an exception if no record is found
@@ -172,7 +200,22 @@ abstract class TDbObjectQueries
      */
     public static function first(string $query) : ? DbObject
     {
-        return null;
+        $sObject = new TDbQueryObject();
+        $sObject->table = self::getTableName();
+        $sObject->where = $query;
+        $sObject->fields = self::getFields();
+
+
+
+        $query = TDbQueryBuilder::buildQuery(self::$pdo, "select", $sObject);
+        $std = self::runQuery($query);
+        $className = get_called_class();
+        $count = $std->rowCount();
+       
+        if($count == 0)  throw new TDbQueryResultException("First returns no record");
+        
+        $data = $std->fetch(\PDO::FETCH_ASSOC);
+        return new $className($data);
     }
     /**
      * Returns the first record of the result or default if the result is empty
@@ -183,7 +226,22 @@ abstract class TDbObjectQueries
      */
     public static function firstOrDefault(string $query, ? DbObject $default = null) : ? DbObject
     {
-        return null;
+        $sObject = new TDbQueryObject();
+        $sObject->table = self::getTableName();
+        $sObject->where = $query;
+        $sObject->fields = self::getFields();
+
+
+
+        $query = TDbQueryBuilder::buildQuery(self::$pdo, "select", $sObject);
+        $std = self::runQuery($query);
+        $className = get_called_class();
+        $count = $std->rowCount();
+       
+        if($count == 0) return null;
+        
+        $data = $std->fetch(\PDO::FETCH_ASSOC);
+        return new $className($data);
     }
     /**
      * Return all records by query
@@ -268,10 +326,9 @@ abstract class TDbObjectQueries
         $sObject = new TDbQueryObject();
         $sObject->table = self::getTableName();
         $sObject->where = $query;
-        $sObject->fields = array_Keys($fieldValueArray);
-        $sObject->values = array_values($fieldValueArray);
+        $sObject->fields_update = $fieldValueArray;
         $query = TDbQueryBuilder::buildQuery(self::$pdo,"update",$sObject);
-        print_r($query);
+        self::runExec($query);
     }
 
     /**

@@ -33,7 +33,7 @@ abstract class TDbQueryBuilder
 
     //Default CRUD
     public static $defaultSelect = "SELECT {fields} FROM {table} WHERE {where} ";
-    public static $defaultUpdate = "UPDATE {table} SET ({fields_update})  WHERE {where}";
+    public static $defaultUpdate = "UPDATE {table} SET {fields_update}  WHERE {where}";
     public static $defaultInsert = "INSERT INTO {table} ({fields}) VALUES ({field_values_insert})";
     public static $defaultDelete = "DELETE FROM {table} WHERE {where}";
 
@@ -87,7 +87,22 @@ abstract class TDbQueryBuilder
            $replace[7] = self::getFormatedValues($replacementObject->values,$pdo);
         }
 
+        if($replacementObject->fields_update != null){
+
+            $replace[8] = self::getUpdateValues($replacementObject->fields_update,$pdo);
+        }
+
         return str_replace(self::getSearchArray($replacementObject), $replace, self::getTemplate($queryType));
+    }
+
+    private static function getUpdateValues(array $input, \PDO $pdo){
+        $data = [];
+        foreach ($input as $field => $value) {
+            $data[] = str_replace(["{field}","{value}"],[$field,self::formatValues($value,$pdo)],self::$updateFieldTemplate);
+        }
+
+        return implode(", ",$data);
+
     }
 
     private static function getFormatedValues(array $input, \PDO $pdo)
@@ -95,28 +110,32 @@ abstract class TDbQueryBuilder
         $v = [];
         foreach ($input as $innerKey => $innerValue) {
 
-            switch (strtolower(gettype($innerValue))) {
-                case "boolean":
-                    $v[] = $innerValue === true ? 1 : 0;
-                    break;
-                case "null":
-                    $v[] = "NULL";
-                    break;
-                case "integer":
-                case "double":
-                    $v[] = $innerValue;
-                    break;
-                case "string":
-                    $v[] = $pdo->quote($innerValue);
-                    break;
-                default:
-                    $v[] = $pdo->quote(json_encode($innerValue));
-                    break;
-
-            }
+           $v[] = self::formatValues($innerValue,$pdo);
 
         }
         return implode(", ", $v);
+    }
+
+    private static function formatValues($input, \PDO $pdo){
+        switch (strtolower(gettype($input))) {
+            case "boolean":
+                return $input === true ? 1 : 0;
+                break;
+            case "null":
+            return "NULL";
+                break;
+            case "integer":
+            case "double":
+            return $input;
+                break;
+            case "string":
+            return$pdo->quote($input);
+                break;
+            default:
+            return $pdo->quote(json_encode($input));
+                break;
+
+        }
     }
 
     private static function getSearchArray(TDbQueryObject $replacementObject) : array
