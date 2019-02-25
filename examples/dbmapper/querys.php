@@ -1,13 +1,5 @@
 <?php
 
-session_start();
-include("../config.php");
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
-include(BASE_PATH . "TStuff/Php/tstuff.php");
-include("../inc/pdoconnect.php");
-
 use TestClass\DbUser;
 use TestClass\DbProducts;
 use TStuff\Php\Cache\TFileCache;
@@ -65,7 +57,7 @@ foreach($products as $v){
     echo $v->getPrimaryFieldValue()." - ". $v->name." Stock: $v->inStock"." <br/>";
 }
 
-print_r(DbProducts::single("product_id > 1"));
+//print_r(DbProducts::single("product_id > 1"));
 
 //DbProducts::delete($products);
 
@@ -80,7 +72,7 @@ foreach($myUsers as $k => $u){
 
 }
 
-DbUser::delete(DbUser::all("1=1 limit 1, 100"));
+DbProducts::deleteBy("in_stock > 1");
 
 
 DbProducts::updateBy("name like '%first%'",array("in_stock"=>10));

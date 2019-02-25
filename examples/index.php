@@ -22,11 +22,11 @@ include("inc/pdoconnect.php");
                 <li><a href="?demo=1">DI Test</a></li>
                 <li><a href="?demo=2">Text Transform</a></li>
                 <li><a href="?demo=3">WebApi</a></li>
-             <li><a href="?demo=4">Reflection Doc Parser</a></li>
+                <li><a href="?demo=4">Reflection Doc Parser</a></li>
                 <li><a href="?demo=5">Cache</a></li>
                 <li><a href="?demo=6">Combine Modules</a></li>
-             <!--   <li><a href="?demo=7"></a></li>
-                <li><a href="?demo=8"></a></li>
+                 <li><a href="?demo=7">DbMapper Actions</a></li>
+              <!--  <li><a href="?demo=8"></a></li>
                 <li><a href="?demo=9"></a></li>
                 <li><a href="?demo=10"></a></li> -->
             </ul>
@@ -55,6 +55,9 @@ include("inc/pdoconnect.php");
             case "6":
                 include("combine/disetup.php");
             break;
+            case "7":
+                include("dbmapper/querys.php");
+                break;
             default:
                 echo "Choose a demo";
             break;
