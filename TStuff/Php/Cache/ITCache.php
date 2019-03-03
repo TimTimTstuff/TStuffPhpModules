@@ -13,7 +13,7 @@ namespace TStuff\Php\Cache  ;
          * @param integer $lifetime how long should a value be valid
          * @return void
          */
-        public function storeValue(string $category,string $key,  $value, int $lifetime);
+        public function storeValue(string $category,string $key,  $value, int $lifetime = 60*60*24);
         /**
          * Get the value from the cache
          *
@@ -38,5 +38,5 @@ namespace TStuff\Php\Cache  ;
          * @param string $key
          * @return boolean
          */
-        public function existsKey(string $category, string $key):bool;
+        public function existsKey(string $category, string $key);
     }

@@ -37,7 +37,7 @@ abstract class TDbObjectQueries
 /* #endregion */
        
 /* #region Setter */
-    public static function setPdo(\Pdo $pdo)
+    public static function setPdo(\PDO $pdo)
     {
         self::$pdo = $pdo;
     }
