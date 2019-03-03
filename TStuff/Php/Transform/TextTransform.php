@@ -5,6 +5,7 @@ namespace TStuff\Php\Transform   {
 
     class TextTransform  {
         public static function CamelCaseToSnakeCase(string $pascalCase):string{
+            $matches = [];
             preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $pascalCase, $matches);
             $ret = $matches[0];
             foreach ($ret as &$match) {
