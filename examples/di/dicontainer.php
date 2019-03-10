@@ -11,6 +11,7 @@ use TestClass\UserHandler;
 $in = new DI\TInject();
 
 
+/** @var array $_SESSION */
 //Register SessionHandler
 $in->RegisterService("session", new T\SessionHelper($_SESSION), DI\TInjectTypes::AlwaysNew);
 

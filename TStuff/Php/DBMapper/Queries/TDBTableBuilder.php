@@ -13,7 +13,7 @@
  * ) ENGINE = InnoDB;
  */
 
-namespace TStuff\Php\DBMapper {
+namespace TStuff\Php\DBMapper\Queries {
 
     class TDBTableBuilder
     {
@@ -28,7 +28,7 @@ namespace TStuff\Php\DBMapper {
         private static $fieldTemplate = ", `{name}` {type} {not_null} NULL {default} ";
         private static $defaultValueTemplate = "DEFAULT {value}";
         private static $primaryTemplate = ", PRIMARY KEY (`{name}`)";
-        private static $uniqueTemplate = ", UNIQUE ({fields})";
+        private static $uniqueTemplate = ", UNIQUE ({field})";
         private static $tableTemplate = "CREATE TABLE  {table} ( {content} ) ENGINE = {engine}";
         private static $addField = "ALTER TABLE `{table}` ADD {field}";
         private static $removeField = "ALTER TABLE `{table}` DROP `{name}`;";
@@ -99,11 +99,13 @@ namespace TStuff\Php\DBMapper {
           $content.= str_replace("{name}",$this->fieldPrimary[0],self::$primaryTemplate);
           
           //set unique
-          $fields = "`".$this->fieldPrimary[0]."`";
+          $uniqueList = [];
           foreach (self::$uniqueFields as  $value) {
-              $fields.=",`".$value."`";
+            $uniqueList[] =  str_replace("{field}","`".$value."`",self::$uniqueTemplate);
           }
-          $content.= str_replace("{fields}",$fields,self::$uniqueTemplate);
+
+          
+          $content.= implode(", ",$uniqueList);
 
           //build sql
           return str_replace(
