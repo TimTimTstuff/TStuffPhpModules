@@ -12,9 +12,4 @@ $inject->RegisterService("cache",function($c){
 
 $inject->RegisterService("db",$pdo);
 
-$inject->RegisterService("dbMapper",function($c){
-    /**
-     * @var Tinject $c
-     */
-   return $c->Instantiate("TStuff\Php\DBMapper\TDBMapper");
-});
+$mapper = $inject->Instantiate("TStuff\Php\DBMapper\TDBMapper");

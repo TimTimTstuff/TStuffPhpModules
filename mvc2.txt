@@ -1,0 +1,62 @@
+
+
+ControllerFactory
+    
+    __construct(TInject $container)
+    
+    
+     requestModule($name){
+
+         $model = $container->instanciate("model\".$name."Model");
+         $ctrl = $contaienr->instanciate("controller\".$name."Controller");
+         $ctrl->setModel($model);
+         $view = $container->instanciate("view\".$name."View");
+         $view->setController($ctrl);
+
+         $view->renderView();
+
+       
+
+     }
+
+
+MyController
+    __construct($logger, $currentUser, $db, $session)
+
+
+
+MainController
+
+
+
+    ->setRequestedPage($url);
+
+    ->getCurrentUser()
+
+    ->getCurrentSession()
+
+    getHeader()
+    {
+        ControllerFactory::requestController("header");
+    }
+    getNav(){
+        ControllerFactory::requestController("nav);
+    }
+
+
+MainView
+    <body>
+    <header>
+        $ctrl->getHeader()
+    </header>
+    <nav>
+        $ctrl->getNav()
+    </nav>
+    <content>
+         
+    </content>
+    <footer>
+         
+    </footer>
+
+

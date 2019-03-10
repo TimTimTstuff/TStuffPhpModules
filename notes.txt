@@ -1,0 +1,89 @@
+
+
+-> Hinzufügen des Models
+
+-> Hinzufügen der View
+
+
+BaseController
+    ->show();
+    ->input();
+
+
+
+
+CustomController  extends  BaseController
+
+
+
+baseurl/login
+
+PageFactory::show("login") -> /crl/Logincrtrl.php
+                              /model/Loginmodel.php
+                              /view/Loginview.php
+        
+
+
+PageFactory::registerController($crlName){
+    $name = f_uc($ctrlName);
+    $model ::createModel($name);
+    $ctrl ::createController($name,$model);
+    $view ::createView($name,$ctrl)
+
+}
+
+
+
+interfaces IBaseController{
+    function setInputVars($data) 
+    function setModel($model)
+}
+
+interface IView{
+    function renderView();
+    function setController($ctrl);
+}
+
+interface IModel{
+    
+}
+
+
+
+
+Controller{
+
+    ->input($page)
+
+$recordsPerPage = 10;
+    ->getCurrentPage(){
+        return $inputdata->page;
+    }
+
+    ->getTotalPages(){
+        return $model::getTotalCount()/$this->recordsPerPage;
+    }
+    
+    ->getRecords(){
+        $records = $model::getRecords($recordsPerPage, $this->currentPage*$recordsPerPage);
+
+
+
+        return $records;
+    }
+}
+
+
+Model{
+
+    ::getRecords($count,$offset) Posts[]
+    ::getTotalCount() int
+
+}
+
+View{
+
+    ::renderRecords($records)
+    ::renderPagination($currentPage, $totalPages)
+   *->renderView();//ausgabe der gesamten seite
+}
