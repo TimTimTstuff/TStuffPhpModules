@@ -28,6 +28,8 @@ $logger->registerLogger(new EchoLogger(),[LogLevel::Trace,LogLevel::Debug,LogLev
 $logger->registerLogger(new FileLogger(BASE_PATH."/log"),[LogLevel::Fatal,LogLevel::Error]);
 $logger->registerLogger(new DBLogger($mapper),[LogLevel::Trace,LogLevel::Debug,LogLevel::Info,LogLevel::Warning,LogLevel::Error,LogLevel::Fatal]);
 $mapper->updateDatabase(true);
+
+
 $logger->log(LogLevel::Fatal,"My Fatal form Log",array());
 
 $logger->trace("Hallo from Trace");
